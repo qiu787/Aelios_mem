@@ -612,4 +612,5 @@ curl "https://<worker>/v1/guide-dog/chat/completions" \
   -H "Authorization: Bearer <GUIDE_DOG_API_KEY>" \
   -H "content-type: application/json" \
   -d '{"model":"companion","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"请描述这张图。"},{"type":"image_url","image_url":{"url":"https://dummyimage.com/160x80/00ff00/000000.png&text=GREEN"}}]}],"max_tokens":80}'
+
 ```
