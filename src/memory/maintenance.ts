@@ -127,12 +127,30 @@ export async function runMemoryMaintenance(
     }
 
     const extraction = await extractMemoriesFromMessages(env, batch);
+
+    // ── NEW: persist individual memories with model-assigned importance ──
+    const minImportance = getMinImportance(env);
+    for (const memory of extraction.memories) {
+      if (memory.importance < minImportance) continue;
+      if (memory.confidence < 0.6) continue;
+      if (await isDuplicateMemory(env, { namespace: message.namespace, memory })) continue;
+
+      await persistMemoryWithMerge(env, {
+        namespace: message.namespace,
+        memory,
+        source: message.source,
+        sourceMessageIds: memory.source_message_ids,
+      });
+    }
+
+    // ── Keep batch summary for RAG recall, but low importance so it stays
+    //    out of the 阁楼 (frontend high-importance view). ──
     const summaryContent = extraction.summary_patch || buildBatchSummary(batch);
     if (summaryContent) {
       const summaryMemory: ExtractedMemory = {
         type: "summary",
         content: summaryContent,
-        importance: 0.6,
+        importance: 0.35,
         confidence: 0.9,
         tags: ["batch-summary"],
         source_message_ids: batch.map((m) => m.id),

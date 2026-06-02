@@ -160,21 +160,39 @@ function buildExtractionPrompt(messages: MessageRecord[]): string {
     "- 关系里程碑",
     "- 反复出现的习惯",
     "",
+    "打分标准（非常重要，请严格遵守）：",
+    "- importance 代表"未来对话中用到这条信息的概率"，不是"这句话重不重要"。",
+    "- 大多数记忆应该在 0.3–0.6 之间。0.7+ 是少数，0.85+ 极其罕见。",
+    "- 如果 50 条对话里你提取了 5 条记忆，最多 1 条可以超过 0.8。",
+    "- 随口一提的偏好 → 0.3–0.5",
+    "- 明确反复强调的偏好/习惯 → 0.6–0.75",
+    "- 重要项目/计划/承诺/边界/里程碑 → 0.75–0.9",
+    "- 改变关系本质的事件 → 0.9+（几乎不该出现）",
+    "- 如果某条信息不值得记，就不要输出它，而不是给它打低分。",
+    "",
     "输出格式：",
     JSON.stringify({
       memories: [
         {
           type: "project",
           content: "你正在做一个 Cloudflare Worker 记忆代理。",
-          importance: 0.86,
+          importance: 0.72,
           confidence: 0.94,
           tags: ["project", "cloudflare"],
           source_message_ids: ["msg_x"]
         },
         {
+          type: "preference",
+          content: "你喜欢喝拿铁。",
+          importance: 0.35,
+          confidence: 0.8,
+          tags: ["preference", "food"],
+          source_message_ids: ["msg_z"]
+        },
+        {
           type: "boundary",
           content: "我需要避免把你的设定或偏好说成系统记录。",
-          importance: 0.82,
+          importance: 0.78,
           confidence: 0.9,
           tags: ["boundary", "style"],
           source_message_ids: ["msg_y"]
