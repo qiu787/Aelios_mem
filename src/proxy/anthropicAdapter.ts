@@ -354,8 +354,8 @@ function applyCacheOverrides(systemBlocks: AnthropicTextBlock[], env: Env): void
     return;
   }
 
-  const ttl = env.ANTHROPIC_CACHE_TTL === "1h" ? "1h" : "5m";
-  anchor.cache_control = { type: "ephemeral", ttl };
+  //const ttl = env.ANTHROPIC_CACHE_TTL === "1h" ? "1h" : "5m";
+  anchor.cache_control = { type: "ephemeral"};
 }
 
 export async function callAnthropicNative(env: Env, body: AnthropicRequest, targetModel?: string): Promise<Response> {
